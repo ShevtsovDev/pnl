@@ -9,7 +9,7 @@ import { ConfigService } from '@nestjs/config';
     TypeOrmModule.forRootAsync({
       useFactory: (configService: ConfigService) =>
         getDatabaseConfig({
-          host: '46.101.174.159',
+          host: 'pdl-soft-postgres-1',
           password: configService.get('POSTGRES_PASSWORD'),
           database: configService.get('POSTGRES_DB'),
           username: configService.get('POSTGRES_USER'),
