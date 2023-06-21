@@ -14,7 +14,7 @@ COPY --chown=node:node package*.json ./
 
 # Install app dependencies using the `npm ci` command instead of `npm install`
 RUN npm ci
-RUN mkdir node_modules/.cache && chmod -R 777 node_modules/.cache
+RUN mkdir /usr/src/app/dist/ && chmod -R 777 /usr/src/app/dist/
 
 # Bundle app source
 COPY --chown=node:node . .
