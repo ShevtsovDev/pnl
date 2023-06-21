@@ -3,16 +3,12 @@ services:
     build:
       dockerfile: Dockerfile
       context: .
-      # Only will build development stage from our dockerfile
-      target: development
-    volumes:
-      - .:/usr/src/app
     env_file:
       - .env
-    # Run a command against the development stage of the image
-    command: npm run start:dev
     ports:
       - 5555:5555
+    depends_on:
+      - postgres
   postgres:
     image: postgres
     restart: always
