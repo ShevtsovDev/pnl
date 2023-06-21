@@ -4,7 +4,7 @@ services:
       dockerfile: Dockerfile
       context: .
       # Only will build development stage from our dockerfile
-      target: development
+      target: production
     volumes:
       - .:/usr/src/app
     env_file:
