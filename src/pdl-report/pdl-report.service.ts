@@ -22,11 +22,18 @@ export class PdlReportService {
     @InjectRepository(PdlReportPosition)
     private readonly pdlReportPositionRepository: Repository<PdlReportPosition>,
   ) {}
-  async create(createPdlReportDto: CreatePdlReportDto, { id }: IExtractToken) {
-    const data = await this.pdlService.create({
-      costPrice: 0,
-      date: new Date(),
-    });
+  async create(
+    createPdlReportDto: CreatePdlReportDto,
+    { id }: IExtractToken,
+    shopId: string,
+  ) {
+    const data = await this.pdlService.create(
+      {
+        costPrice: 0,
+        date: new Date(),
+      },
+      shopId,
+    );
 
     for (let i = 0; i <= data.data.length - 1; i++) {
       const currentReportData = data.data[i];
@@ -47,6 +54,7 @@ export class PdlReportService {
           income: currentReportData.income,
           margin: currentReportData.margin,
           roi: currentReportData.roi,
+          report_id: shopId,
         });
 
         await this.pdlReportRepository.save(newReport);
@@ -66,11 +74,12 @@ export class PdlReportService {
     } catch (e) {}
   }
 
-  async findAll(user_id: number) {
+  async findAll(user_id: number, shopId: string) {
     try {
       const data = await this.pdlReportRepository.find({
         where: {
-          user_id,
+          user_id: user_id,
+          report_id: shopId,
         },
         relations: ['reportPositions'],
         order: {
@@ -80,10 +89,11 @@ export class PdlReportService {
         },
       });
       if (data.length === 0) {
-        await this.create({}, { id: user_id });
+        await this.create({}, { id: user_id }, shopId);
         const data = await this.pdlReportRepository.find({
           where: {
-            user_id,
+            report_id: shopId,
+            user_id: user_id,
           },
           relations: ['reportPositions'],
           order: {
@@ -108,7 +118,6 @@ export class PdlReportService {
       },
       relations: ['reportPositions'],
     });
-    const positions = report.reportPositions;
 
     const costPrice = report.reportPositions
       .map((i) => +i.costPrice)
@@ -126,11 +135,12 @@ export class PdlReportService {
         : report.additionalClosures;
 
     const income = +(
-      report.ozonCost -
+      report.totalPayment -
       costPrice -
       report.additionalClosures -
       report.taxValue
     ).toFixed(2);
+
     const margin = +(income / report.totalSale) * 100;
     const roi = +(income / costPrice);
     const ozonCostToSale = +(report.ozonCost / report.totalSale) * 100;

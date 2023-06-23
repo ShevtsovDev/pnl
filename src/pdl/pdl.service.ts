@@ -13,17 +13,34 @@ import {
 import * as dayjs from 'dayjs';
 import { IPdlReport } from '../type/index.type';
 import { mapRealizationResponseRowToProduct } from './utils/index.utils';
+import { ReportService } from '../report/report.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Report } from '../report/entities/report.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class PdlService {
   instance: AxiosInstance;
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    @InjectRepository(Report)
+    private readonly reportRepository: Repository<Report>,
+  ) {
     this.instance = axios.create({
       baseURL: OzonRoutes.Base,
     });
   }
-  async create(createPdlDto: CreatePdlDto) {
+
+  async create(createPdlDto: CreatePdlDto, shopId: string) {
     try {
+      const shop = await this.reportRepository.findOne({
+        where: {
+          shopUid: shopId,
+        },
+      });
+      const token = shop.token;
+      const client = shop.clientId;
+
       const date = dayjs(createPdlDto.date);
       const now = dayjs(new Date());
       const response: IPdlReport[] = [];
@@ -40,13 +57,19 @@ export class PdlService {
         // Отчет о реализации
         const fincanceRealization = await this.fetchFinanceRealization(
           from.format('YYYY-MM'),
+          token,
+          client,
         );
 
         // Транзакции
-        const cashFlow = await this.fetchCashFlow({
-          from: from.toDate(),
-          to: to.toDate(),
-        });
+        const cashFlow = await this.fetchCashFlow(
+          {
+            from: from.toDate(),
+            to: to.toDate(),
+          },
+          token,
+          client,
+        );
 
         // Выруча
         const totalSale = this.calculateSale(fincanceRealization.result.rows);
@@ -64,7 +87,7 @@ export class PdlService {
         );
 
         // Чистая прибыль
-        const income = +this.calculateIncome(ozonCost, costPrice);
+        const income = +this.calculateIncome(totalPayment, costPrice);
 
         // Маржа
         const margin = +this.calculateMargin(income, totalSale) * 100;
@@ -113,7 +136,11 @@ export class PdlService {
     }
   }
 
-  private async fetchFinanceRealization(date: string | Date) {
+  private async fetchFinanceRealization(
+    date: string | Date,
+    token: string,
+    client: string,
+  ) {
     return (
       await axios.post<RealizationResponse>(
         OzonRoutes.Base + OzonRoutes.Reports.Finance.Realization,
@@ -122,15 +149,19 @@ export class PdlService {
         },
         {
           headers: {
-            'Client-Id': this.configService.get('OZON_ID'),
-            'Api-Key': this.configService.get('OZON_API_KEY'),
+            'Client-Id': client,
+            'Api-Key': token,
           },
         },
       )
     ).data;
   }
 
-  private async fetchCashFlow(date: { from: Date; to: Date }) {
+  private async fetchCashFlow(
+    date: { from: Date; to: Date },
+    token: string,
+    client: string,
+  ) {
     const response = await axios.post<CashFlowResponse>(
       OzonRoutes.Base + OzonRoutes.Reports.CashFlow.List,
       {
@@ -144,8 +175,8 @@ export class PdlService {
       },
       {
         headers: {
-          'Client-Id': this.configService.get('OZON_ID'),
-          'Api-Key': this.configService.get('OZON_API_KEY'),
+          'Client-Id': client,
+          'Api-Key': token,
         },
       },
     );

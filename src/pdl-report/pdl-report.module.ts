@@ -6,11 +6,12 @@ import { PdlModule } from '../pdl/pdl.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PdlReport } from './entities/pdl-report.entity';
 import { PdlReportPosition } from '../pdl-report-position/entities/pdl-report-position.entity';
+import { Report } from '../report/entities/report.entity';
 
 @Module({
   imports: [
     PdlModule,
-    TypeOrmModule.forFeature([PdlReport, PdlReportPosition]),
+    TypeOrmModule.forFeature([PdlReport, PdlReportPosition, Report]),
   ],
   controllers: [PdlReportController],
   providers: [PdlReportService],

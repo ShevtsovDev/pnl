@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { PdlModule } from './pdl/pdl.module';
 import { PdlReportModule } from './pdl-report/pdl-report.module';
 import { PdlReportPositionModule } from './pdl-report-position/pdl-report-position.module';
+import { ReportModule } from './report/report.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { PdlReportPositionModule } from './pdl-report-position/pdl-report-positi
     DatabaseModule,
     PdlReportModule,
     PdlReportPositionModule,
+    ReportModule,
   ],
   controllers: [AppController],
   providers: [AppService],

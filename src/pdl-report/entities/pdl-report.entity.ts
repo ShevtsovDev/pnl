@@ -3,10 +3,12 @@ import {
   Entity,
   Generated,
   JoinColumn,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { PdlReportPosition } from '../../pdl-report-position/entities/pdl-report-position.entity';
+import { Report } from '../../report/entities/report.entity';
 
 @Entity()
 export class PdlReport {
@@ -63,4 +65,7 @@ export class PdlReport {
     { cascade: true },
   )
   reportPositions: PdlReportPosition[];
+
+  @Column({ name: 'report_id' })
+  report_id: string;
 }

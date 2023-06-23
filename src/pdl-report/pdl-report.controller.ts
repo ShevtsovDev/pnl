@@ -8,6 +8,7 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
+  Query,
 } from '@nestjs/common';
 import { PdlReportService } from './pdl-report.service';
 import { CreatePdlReportDto } from './dto/create-pdl-report.dto';
@@ -29,13 +30,17 @@ export class PdlReportController {
   create(
     @Body() createPdlReportDto: CreatePdlReportDto,
     @ExtractDataFromToken() token: IExtractToken,
+    @Param('shopId') shopId: string,
   ) {
-    return this.pdlReportService.create(createPdlReportDto, token);
+    return this.pdlReportService.create(createPdlReportDto, token, shopId);
   }
 
-  @Get()
-  findAll(@ExtractDataFromToken() token: IExtractToken) {
-    return this.pdlReportService.findAll(token.id);
+  @Get('/:shopId')
+  findAll(
+    @ExtractDataFromToken() token: IExtractToken,
+    @Param('shopId') shopId: string,
+  ) {
+    return this.pdlReportService.findAll(token.id, shopId);
   }
 
   @Post(':uuid')
