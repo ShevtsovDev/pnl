@@ -41,6 +41,7 @@ export class PdlReportService {
       const candidate = await this.pdlReportRepository.findOne({
         where: {
           date: currentReportData.date,
+          report_id: shopId,
         },
       });
 
@@ -94,6 +95,7 @@ export class PdlReportService {
       });
       if (data.length === 0) {
         await this.create({}, { id: user_id }, shopId);
+
         const data = await this.pdlReportRepository.find({
           where: {
             report_id: shopId,

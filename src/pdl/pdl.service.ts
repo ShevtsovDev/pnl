@@ -38,6 +38,9 @@ export class PdlService {
           shopUid: shopId,
         },
       });
+
+      if (!shop) {
+      }
       const token = shop.token;
       const client = shop.clientId;
 

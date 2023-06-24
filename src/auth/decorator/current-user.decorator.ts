@@ -15,7 +15,6 @@ export const ExtractDataFromToken = createParamDecorator(
     const extractDataFromTonek = JSON.parse(
       Buffer.from(token.split('.')[1], 'base64').toString(),
     ) as { id: number };
-
     return extractDataFromTonek;
   },
 );
