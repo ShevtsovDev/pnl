@@ -18,6 +18,9 @@ export class PdlReportPosition {
   @Column()
   offer_id: string;
 
+  @Column()
+  count: number;
+
   @Column({
     default: 0,
   })

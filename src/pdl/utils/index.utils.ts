@@ -9,6 +9,7 @@ export const mapRealizationResponseRowToProduct = (
       product_id: item.product_id,
       product_name: item.product_name,
       offer_id: item.offer_id,
+      count: item.sale_qty - item.return_qty,
     }),
   );
 };

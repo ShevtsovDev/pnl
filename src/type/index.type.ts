@@ -18,4 +18,5 @@ export interface IPdlReportMappedProduct {
   product_id: number;
   product_name: string;
   offer_id: string;
+  count: number;
 }

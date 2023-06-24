@@ -9,6 +9,7 @@ import {
   UseInterceptors,
   UploadedFile,
   Query,
+  Res,
 } from '@nestjs/common';
 import { PdlReportService } from './pdl-report.service';
 import { CreatePdlReportDto } from './dto/create-pdl-report.dto';
@@ -21,6 +22,7 @@ import { IExtractToken } from '../auth/interface/index.interface';
 import { RecalculatePdlReportDto } from './dto/recalculate-pdl-report.dto';
 import { ImportExelDto } from './dto/ImportExelDtop.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Response } from 'express';
 
 @Controller('pdl-report')
 export class PdlReportController {
@@ -54,6 +56,24 @@ export class PdlReportController {
     });
   }
 
+  @Get('/exel/:report_id')
+  async exportExel(
+    @Param('report_id') report_id: string,
+    @Res() res: Response,
+  ) {
+    const workbook = await this.pdlReportService.exportExel(+report_id);
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename=' + 'tutorials.xlsx',
+    );
+    return workbook.xlsx.write(res).then(function () {
+      res.status(200).end();
+    });
+  }
   @Post('/exel/:uuid')
   @UseInterceptors(FileInterceptor('file'))
   importExel(
