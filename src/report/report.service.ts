@@ -14,12 +14,12 @@ export class ReportService {
   ) {}
   async create(createReportDto: CreateReportDto, userId: number) {
     try {
-      const candidate = await this.reportRepository.find({
+      const candidate = await this.reportRepository.findOne({
         where: {
           shopUid: createReportDto.shopUid,
         },
       });
-      console.log(candidate);
+
       if (candidate) {
         throw new HttpException(
           'Такой магазин уже авторизован',
