@@ -170,7 +170,7 @@ export class PdlReportService {
       },
       relations: ['reportPositions'],
     });
-
+    console.log(report);
     if (!report) {
       throw new HttpException('report not found', HttpStatus.BAD_REQUEST);
     }
@@ -219,7 +219,7 @@ export class PdlReportService {
     worksheet.columns = columns;
     const mappedData = data.map((i) => ({ ...i }));
     worksheet.addRows(mappedData);
-
+    console.log(mappedData);
     return workbook;
   }
   async importExel(dto: ImportExelDto, file: Express.Multer.File) {
