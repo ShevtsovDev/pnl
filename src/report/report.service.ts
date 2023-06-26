@@ -14,6 +14,17 @@ export class ReportService {
   ) {}
   async create(createReportDto: CreateReportDto, userId: number) {
     try {
+      const candidate = await this.reportRepository.find({
+        where: {
+          shopUid: createReportDto.shopUid,
+        },
+      });
+      if (candidate) {
+        throw new HttpException(
+          'Такой магазин уже авторизован',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
       const newReport = await this.reportRepository.create({
         ...createReportDto,
         userId,

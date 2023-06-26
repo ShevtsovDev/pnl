@@ -1,1 +1,3 @@
-export class CreateReportDto {}
+export class CreateReportDto {
+  shopUid: string;
+}
