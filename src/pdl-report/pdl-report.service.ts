@@ -164,11 +164,19 @@ export class PdlReportService {
   async exportExel(report_id: number) {
     const workbook = new Excel.Workbook();
     const worksheet = workbook.addWorksheet('Себестоимость');
-    const data = await this.pdlReportPositionRepository.find({
+    const report = await this.pdlReportRepository.findOne({
       where: {
-        report_id,
+        id: report_id,
       },
+      relations: ['reportPositions'],
     });
+
+    if (!report) {
+      throw new HttpException('report not found', HttpStatus.BAD_REQUEST);
+    }
+
+    const data = report.reportPositions;
+
     const columns: Partial<Column>[] = [
       {
         key: 'id',

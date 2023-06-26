@@ -24,7 +24,7 @@ import { ImportExelDto } from './dto/ImportExelDtop.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 
-@Controller('pdl-report')
+@Controller('pnl-report')
 export class PdlReportController {
   constructor(private readonly pdlReportService: PdlReportService) {}
 
@@ -56,7 +56,7 @@ export class PdlReportController {
     });
   }
 
-  @Get('/exel/:report_id')
+  @Get('/excel/:report_id')
   async exportExel(
     @Param('report_id') report_id: string,
     @Res() res: Response,
@@ -74,7 +74,7 @@ export class PdlReportController {
       res.status(200).end();
     });
   }
-  @Post('/exel/:uuid')
+  @Post('/excel/:uuid')
   @UseInterceptors(FileInterceptor('file'))
   importExel(
     @Param('uuid') uuid: string,
