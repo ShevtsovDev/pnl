@@ -19,6 +19,7 @@ export class ReportService {
           shopUid: createReportDto.shopUid,
         },
       });
+      console.log(candidate);
       if (candidate) {
         throw new HttpException(
           'Такой магазин уже авторизован',
