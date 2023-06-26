@@ -11,7 +11,7 @@ import { PdlReportPositionService } from './pdl-report-position.service';
 import { CreatePdlReportPositionDto } from './dto/create-pdl-report-position.dto';
 import { UpdatePdlReportPositionDto } from './dto/update-pdl-report-position.dto';
 
-@Controller('pdl-report-position')
+@Controller('pnl-report-position')
 export class PdlReportPositionController {
   constructor(
     private readonly pdlReportPositionService: PdlReportPositionService,
