@@ -64,6 +64,10 @@ export class PdlService {
           client,
         );
 
+        if (!fincanceRealization) {
+          continue;
+        }
+
         // Транзакции
         const cashFlow = await this.fetchCashFlow(
           {
@@ -144,20 +148,22 @@ export class PdlService {
     token: string,
     client: string,
   ) {
-    return (
-      await axios.post<RealizationResponse>(
-        OzonRoutes.Base + OzonRoutes.Reports.Finance.Realization,
-        {
-          date,
-        },
-        {
-          headers: {
-            'Client-Id': client,
-            'Api-Key': token,
+    try {
+      return (
+        await axios.post<RealizationResponse>(
+          OzonRoutes.Base + OzonRoutes.Reports.Finance.Realization,
+          {
+            date,
           },
-        },
-      )
-    ).data;
+          {
+            headers: {
+              'Client-Id': client,
+              'Api-Key': token,
+            },
+          },
+        )
+      ).data;
+    } catch (e) {}
   }
 
   private async fetchCashFlow(
