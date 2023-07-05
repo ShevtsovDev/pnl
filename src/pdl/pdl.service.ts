@@ -49,7 +49,7 @@ export class PdlService {
       const response: IPdlReport[] = [];
       const columns = [];
       const rows = [];
-
+      console.log('createPdlDto.date: ', createPdlDto);
       for (let i = 0; i <= now.month() - 1; i++) {
         const key = dayjs().month(i).startOf('day').toDate().toString();
         columns.push(key);
