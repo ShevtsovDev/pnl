@@ -17,6 +17,7 @@ export class ReportService {
       const candidate = await this.reportRepository.findOne({
         where: {
           shopUid: createReportDto.shopUid,
+          userId,
         },
       });
 

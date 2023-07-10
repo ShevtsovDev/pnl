@@ -19,7 +19,7 @@ export class Report {
   @Column()
   shopName: string;
 
-  @Column({ unique: true })
+  @Column()
   shopUid: string;
 
   @Column()
